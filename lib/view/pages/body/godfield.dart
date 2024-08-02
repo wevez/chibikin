@@ -1,3 +1,5 @@
+import 'package:chibikin/state/console/provider.dart';
+import 'package:chibikin/state/godfield/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,6 +32,8 @@ class GodFieldBody extends ConsumerWidget {
     final accountAmount = ref.watch(accountAmountProvider);
     final isSpamming = ref.watch(isSpammingProvider);
     final isSpammingString = isSpamming ? 'Stop spam' : 'Start spam';
+    final console = ref.watch(consoleProvider);
+    ref.watch(godfieldNotifier);
 
     return Expanded(
       child: SingleChildScrollView(
@@ -47,6 +51,7 @@ class GodFieldBody extends ConsumerWidget {
                     hintText: 'Spam Message',
                   ),
                   onChanged: (value) {
+                    debugPrint('a');
                     ref.read(spamMessageProvider.notifier).state = value;
                   },
                 ),
@@ -109,14 +114,14 @@ class GodFieldBody extends ConsumerWidget {
                 color: Colors.black,
                 // child: SingleChildScrollView(
                 child: ListView(
-                  children: [
-                    Text(
-                      ' a',
+                  children: console.map((log) {
+                    return Text(
+                      log,
                       style: TextStyle(
                         color: Colors.white,
                       ),
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
               ),
             ],
