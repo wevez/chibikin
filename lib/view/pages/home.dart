@@ -1,8 +1,9 @@
+import 'package:chibikin/view/pages/body/danna.dart';
 import 'package:chibikin/view/pages/body/godfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final bodyProvider = StateProvider((ref) {
+final bodyProvider = StateProvider<Widget>((ref) {
   return GodFieldBody();
 });
 
@@ -39,6 +40,21 @@ class HomePage extends ConsumerWidget {
                   ),
                   onTap: () {
                     ref.read(bodyProvider.notifier).state = GodFieldBody();
+                  },
+                ),
+                ListTile(
+                  title: Center(
+                    child: Text(
+                      '旦那デスノート',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    ref.read(bodyProvider.notifier).state = DannaBody();
                   },
                 ),
               ],

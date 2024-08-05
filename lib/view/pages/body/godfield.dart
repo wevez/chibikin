@@ -23,6 +23,14 @@ final accountAmountPercentageProvider = StateProvider((ref) {
 final isSpammingProvider = StateProvider((ref) {
   return false;
 });
+final refreshCountPercentageProvider = StateProvider((ref) {
+  return 1.0;
+});
+const maxRefreshCount = 50;
+final refreshCountProvider = StateProvider((ref) {
+  final refreshCountPercentage = ref.watch(refreshCountPercentageProvider);
+  return (maxRefreshCount  * refreshCountPercentage).toInt();
+});
 
 class GodFieldBody extends ConsumerWidget {
   const GodFieldBody({super.key});
@@ -30,6 +38,7 @@ class GodFieldBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accountAmount = ref.watch(accountAmountProvider);
+    final refreshCount = ref.watch(refreshCountProvider);
     final isSpamming = ref.watch(isSpammingProvider);
     final isSpammingString = isSpamming ? 'Stop spam' : 'Start spam';
     final console = ref.watch(consoleProvider);
@@ -51,7 +60,6 @@ class GodFieldBody extends ConsumerWidget {
                     hintText: 'Spam Message',
                   ),
                   onChanged: (value) {
-                    debugPrint('a');
                     ref.read(spamMessageProvider.notifier).state = value;
                   },
                 ),
@@ -91,6 +99,22 @@ class GodFieldBody extends ConsumerWidget {
                   value: ref.watch(accountAmountPercentageProvider),
                   onChanged: (value) {
                     ref.read(accountAmountPercentageProvider.notifier).state = value;
+                  },
+                ),
+              ),
+              SizedBox(height: 16,),
+              Text(
+                'Refresh count: $refreshCount',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(
+                width: 500,
+                child: Slider(
+                  value: ref.watch(refreshCountPercentageProvider),
+                  onChanged: (value) {
+                    ref.read(refreshCountPercentageProvider.notifier).state = value;
                   },
                 ),
               ),

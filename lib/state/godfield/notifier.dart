@@ -19,6 +19,7 @@ class GodfieldNotifier extends Notifier<void> {
     final username = ref.watch(usernameProvider);
     final accountAmount = ref.watch(accountAmountProvider);
     final isWorking = ref.watch(isSpammingProvider);
+    final refreshCount = ref.watch(refreshCountProvider);
     debugPrint('$spamMessage $password $username $accountAmount $isWorking');
     // threads.add(GodfieldThread(spamMessage, password, username, 10));
     // threads.forEach((thread) {
