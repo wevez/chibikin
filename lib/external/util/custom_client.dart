@@ -4,16 +4,16 @@ import 'package:http/http.dart' as http;
 class CustomClient extends http.BaseClient {
   final http.Client _client;
 
-  final Map<String, String> _defaultHeaders = {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0',
-    'Accept': '*/*',
-    'Accept-Language': 'en-US,en;q=0.5',
-    'Accept-Encoding': 'gzip, deflate, br, zstd',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'X-Requested-With': 'XMLHttpRequest',
-    'Content-Length': '0',
-    'Connection': 'keep-alive'
-  };
+  // final Map<String, String> _defaultHeaders = {
+  //   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0',
+  //   'Accept': '*/*',
+  //   'Accept-Language': 'en-US,en;q=0.5',
+  //   'Accept-Encoding': 'gzip, deflate, br, zstd',
+  //   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  //   'X-Requested-With': 'XMLHttpRequest',
+  //   'Content-Length': '0',
+  //   'Connection': 'keep-alive'
+  // };
 
   final Map<String, String> _cookies = {};
 
@@ -32,7 +32,7 @@ class CustomClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    request.headers.addAll(_defaultHeaders);
+    // request.headers.addAll(_defaultHeaders);
 
     if (_cookies.isNotEmpty) {
       request.headers['Cookie'] = _cookies.entries
