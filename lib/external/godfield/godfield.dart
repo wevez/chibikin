@@ -57,7 +57,7 @@ class GodfieldThread {
           debugPrint("<$username> 部屋に参加しました");
           var canceller = false;
           while (true) {
-            if (!_isWorking) return;
+            // if (!_isWorking) return;
             if (canceller || retryCount >= _refreshCount) {
               debugPrint("<$username> 新しいアカウントにリフレッシュします");
               final doRemoveUser = await removeUser(roomId, token);
