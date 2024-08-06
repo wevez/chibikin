@@ -2,97 +2,86 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:chibikin/external/util/custom_client.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 class GodfieldThread {
-  bool _isWorking = false;
-  String _spamMessage;
-  String _password;
-  String _name;
-  int _refreshCount;
-  GodfieldThread(this._spamMessage, this._password, this._name, this._refreshCount);
+  // String _spamMessage;
+  // String _password;
+  // String _name;
+  // int _refreshCount;
+  // int _sendCount = 0;
+  // String? _token = null;
+  String? token;
+  String? roomId;
+  String randomName='';
+  bool ok = false;
+  GodfieldThread();
   final CustomClient client = CustomClient(Client());
-  void setWorking(bool working) {
-    _isWorking = working;
-  }
-  void setPassword(String password) {
-    _password = password;
-  }
-  void setSpamMessage(String message) {
-    _spamMessage = message;
-  }
-  void setName(String name) {
-    _name = name;
-  }
-  void setRefreshCount(int refreshCount) {
-    _refreshCount = refreshCount;
-  }
-  Future<void> start() async {
-    final username = "$_name ${generateRandomString(3)}";
-    // if (await isUsernameDuplicated(username)) {
-    //   debug("ランダムユーザー名 [$username] が重複しているため、ユーザー名を再生成します");
-    //   generatedUsernames.remove(username);
-    //   startMain();
-    //   return;
-    // }
-    int retryCount = 0;
-    final token = await generateToken();
-    // generatedUsernames.add(username);
-    if (token != null) {
-      debugPrint("<$username> トークンを生成しました");
-      final roomId = await createRoom(username, _password, token);
-      if (roomId != null) {
-        // if (await isUsernameDuplicated(username, true)) {
-        //   debug("ランダムユーザー名 [$username] が重複しているため、ユーザー名を再生成します");
-        //   generatedUsernames.remove(username);
-        //   startMain();
-        //   return;
-        // }
-        // userDatasForRemove.add(Triple(roomId, token, username));
-        // updateTitle();
-        debugPrint("<$username> 部屋を作成しました");
-        final doAddRoomUser = await addRoomUser(username, roomId, token);
-        if (doAddRoomUser) {
-          debugPrint("<$username> 部屋に参加しました");
-          var canceller = false;
-          while (true) {
-            // if (!_isWorking) return;
-            if (canceller || retryCount >= _refreshCount) {
-              debugPrint("<$username> 新しいアカウントにリフレッシュします");
-              final doRemoveUser = await removeUser(roomId, token);
-              if (doRemoveUser) {
-                debugPrint("<$username> 部屋を退出しました");
-                // generatedUsernames.remove(username);
-                // userDatasForRemove.remove(Triple(roomId, token, username));
-                // updateTitle();
-              }
-              // startMain();
-              return;
-            }
-            final doSendMessage = await sendMessage('$_spamMessage ${generateRandomString(5)}', roomId, token);
-            if (doSendMessage) {
-              retryCount += 1;
-              debugPrint("<$username> メッセージを送信しました [$_spamMessage] (x$retryCount)");
-            } else {
-              canceller = true;
-              debugPrint('failed to send messsage');
-            }
-          }
-        } else {
-          // generatedUsernames.remove(username);
-          // startMain();
-          return;
-        }
-      } else {
-        debugPrint("無効なユーザー名 [$username] が検出されたため、全スパマーの動作を停止します");
-        // stopTask();
-        return;
-      }
-    } else {
-      debugPrint("<$username> トークンの生成に失敗しました");
-    }
-  }
+  // Future<void> start() async {
+  //   final username = "$_name ${generateRandomString(3)}";
+  //   // if (await isUsernameDuplicated(username)) {
+  //   //   debug("ランダムユーザー名 [$username] が重複しているため、ユーザー名を再生成します");
+  //   //   generatedUsernames.remove(username);
+  //   //   startMain();
+  //   //   return;
+  //   // }
+  //   int retryCount = 0;
+  //   final token = await generateToken();
+  //   // generatedUsernames.add(username);
+  //   if (token != null) {
+  //     debugPrint("<$username> トークンを生成しました");
+  //     final roomId = await createRoom(username, _password, token);
+  //     if (roomId != null) {
+  //       // if (await isUsernameDuplicated(username, true)) {
+  //       //   debug("ランダムユーザー名 [$username] が重複しているため、ユーザー名を再生成します");
+  //       //   generatedUsernames.remove(username);
+  //       //   startMain();
+  //       //   return;
+  //       // }
+  //       // userDatasForRemove.add(Triple(roomId, token, username));
+  //       // updateTitle();
+  //       debugPrint("<$username> 部屋を作成しました");
+  //       final doAddRoomUser = await addRoomUser(username, roomId, token);
+  //       if (doAddRoomUser) {
+  //         debugPrint("<$username> 部屋に参加しました");
+  //         var canceller = false;
+  //         while (true) {
+  //           // if (!_isWorking) return;
+  //           if (canceller || retryCount >= _refreshCount) {
+  //             debugPrint("<$username> 新しいアカウントにリフレッシュします");
+  //             final doRemoveUser = await removeUser(roomId, token);
+  //             if (doRemoveUser) {
+  //               debugPrint("<$username> 部屋を退出しました");
+  //               // generatedUsernames.remove(username);
+  //               // userDatasForRemove.remove(Triple(roomId, token, username));
+  //               // updateTitle();
+  //             }
+  //             // startMain();
+  //             return;
+  //           }
+  //           final doSendMessage = await sendMessage('$_spamMessage ${generateRandomString(5)}', roomId, token);
+  //           if (doSendMessage) {
+  //             retryCount += 1;
+  //             debugPrint("<$username> メッセージを送信しました [$_spamMessage] (x$retryCount)");
+  //           } else {
+  //             canceller = true;
+  //             debugPrint('failed to send messsage');
+  //           }
+  //         }
+  //       } else {
+  //         // generatedUsernames.remove(username);
+  //         // startMain();
+  //         return;
+  //       }
+  //     } else {
+  //       debugPrint("無効なユーザー名 [$username] が検出されたため、全スパマーの動作を停止します");
+  //       // stopTask();
+  //       return;
+  //     }
+  //   } else {
+  //     debugPrint("<$username> トークンの生成に失敗しました");
+  //   }
+  // }
   Future<String?> generateToken() async {
     final headers = {
       'authority': 'securetoken.googleapis.com',
@@ -262,9 +251,10 @@ class GodfieldThread {
 
     return response.statusCode == 200;
   }
-  String generateRandomString(int length) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    final rand = Random();
-    return List.generate(length, (index) => chars[rand.nextInt(chars.length)]).join('');
-  }
+}
+
+String generateRandomString(int length) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  final rand = Random();
+  return List.generate(length, (index) => chars[rand.nextInt(chars.length)]).join('');
 }
